@@ -20,7 +20,7 @@ public class User {
 
     @ManyToOne
     @JoinColumn(name = "roleId", nullable = false)
-    private Role role; // Relationship to Role
+    private Role role;
 
     private String fullName;
     private String email;
