@@ -1,6 +1,6 @@
 package PRM392.CleaningServices.ultils;
 
-import PRM392.CleaningServices.services.CustomUserDetailsService;
+import PRM392.CleaningServices.services.impl.CustomUserDetailsService;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

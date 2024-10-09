@@ -1,4 +1,4 @@
-package PRM392.CleaningServices.services;
+package PRM392.CleaningServices.services.impl;
 
 import PRM392.CleaningServices.model.User;
 import PRM392.CleaningServices.repository.UserRepository;

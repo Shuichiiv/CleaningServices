@@ -1,4 +1,4 @@
-package PRM392.CleaningServices.dto;
+package PRM392.CleaningServices.dto.request;
 
 import lombok.*;
 

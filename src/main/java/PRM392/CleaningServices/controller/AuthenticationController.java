@@ -1,7 +1,7 @@
 package PRM392.CleaningServices.controller;
 
 
-import PRM392.CleaningServices.dto.LoginRequest;
+import PRM392.CleaningServices.dto.request.LoginRequest;
 import PRM392.CleaningServices.model.User;
 import PRM392.CleaningServices.repository.UserRepository;
 import PRM392.CleaningServices.ultils.JwtUtil;
@@ -30,7 +30,6 @@ public class AuthenticationController {
 
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("Invalid email or password"));
-
         if (!user.getPassword().equals(password)) {
             throw new RuntimeException("Invalid email or password");
         }

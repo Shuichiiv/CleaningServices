@@ -1,6 +1,6 @@
 package PRM392.CleaningServices.config;
 
-import PRM392.CleaningServices.services.CustomUserDetailsService;
+import PRM392.CleaningServices.services.impl.CustomUserDetailsService;
 import PRM392.CleaningServices.ultils.JwtRequestFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
