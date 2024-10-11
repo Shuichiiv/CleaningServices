@@ -2,6 +2,7 @@ package PRM392.CleaningServices.controller;
 
 import PRM392.CleaningServices.dto.request.ServiceRequest;
 import PRM392.CleaningServices.model.Service;
+import PRM392.CleaningServices.model.User;
 import PRM392.CleaningServices.services.ServiceService;
 import PRM392.CleaningServices.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,15 @@ public class AdminController {
     @GetMapping
     public String returnString(){
         return "AdminController";
+    }
+    @GetMapping("/get-user-role/{roleName}")
+    public ResponseEntity<List<User>> getUsersByRole(@PathVariable String roleName) {
+        try {
+            List<User> users = userService.getUsersByRole(roleName);
+            return ResponseEntity.ok(users);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(null);
+        }
     }
 
     @PutMapping("/update-role/{userId}")
