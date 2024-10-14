@@ -26,6 +26,10 @@ public class Booking {
     private User customer; // Relationship to User (Customer)
 
     @ManyToOne
+    @JoinColumn(name = "cleanerId", nullable = true)  // Add Cleaner relationship
+    private User cleaner; // Relationship to User (Cleaner)
+
+    @ManyToOne
     @JoinColumn(name = "serviceId", nullable = false)
     private Service service; // Relationship to Service
 
@@ -36,4 +40,14 @@ public class Booking {
     private String status; // 'Pending', 'Assigned', 'In Progress', 'Completed', 'Cancelled'
     private Double totalPrice;
     private LocalDateTime createdDate;
+
+    // Mark the booking as completed
+    public void markAsCompleted() {
+        this.status = "Completed";
+    }
+
+    // Check if the booking is completed
+    public boolean isCompleted() {
+        return "Completed".equalsIgnoreCase(this.status);
+    }
 }
