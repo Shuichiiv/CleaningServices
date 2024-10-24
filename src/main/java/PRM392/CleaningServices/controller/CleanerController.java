@@ -33,10 +33,16 @@ public class CleanerController {
     // Confirm completion of a job
     @PostMapping("/confirmCompletion")
     public ResponseEntity<String> confirmCompletion(@RequestBody JobCompletionRequest request) {
-        String result = cleanerService.confirmCompletion(request.getJobId(), request.getCleanerId());
-        if (result.equals("Success")) {
-            return ResponseEntity.ok("Job confirmed successfully.");
+        // Call the service to confirm completion
+        String result = cleanerService.confirmCompletion(request.getBookingId(), request.getCleanerId());
+
+        // Return OK response if the job was confirmed successfully
+        if (result.startsWith("Job completed successfully")) {
+            return ResponseEntity.ok(result);
         }
-        return ResponseEntity.badRequest().body("Failed to confirm job.");
+
+        // Return BAD_REQUEST with the exact failure message otherwise
+        return ResponseEntity.badRequest().body(result);
     }
+
 }

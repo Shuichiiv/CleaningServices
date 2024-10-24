@@ -55,22 +55,25 @@ public class CleanerServiceImpl implements CleanerServices {
     }
 
     @Override
-    public String confirmCompletion(Long jobId, Long cleanerId) {
-        // Confirm job completion by updating the job status in Booking
-        Optional<Booking> optionalBooking = bookingRepository.findById(jobId);
+    public String confirmCompletion(Long bookingId, Long cleanerId) {
 
-        if (optionalBooking.isPresent()) {
-            Booking booking = optionalBooking.get();
 
-            // Check if the booking belongs to the cleaner trying to confirm completion
+        Optional<Booking> bookingOptional = bookingRepository.findById(bookingId);
+
+
+        if (bookingOptional.isPresent()) {
+            Booking booking = bookingOptional.get();
+
+
             if (booking.getCleaner() != null && booking.getCleaner().getUserId().equals(cleanerId)) {
-                // Ensure the booking is not already completed
-                if (!booking.isCompleted()) {
-                    // Mark the job as completed
-                    booking.markAsCompleted();
-                    bookingRepository.save(booking);  // Persist the changes to the database
 
-                    // Optionally, handle customer feedback after job completion
+
+                if (!booking.isCompleted()) {
+
+                    booking.markAsCompleted();
+                    bookingRepository.save(booking);
+
+
                     String feedbackMessage = handleCustomerFeedback(booking);
 
                     return "Job completed successfully. " + feedbackMessage;
@@ -85,17 +88,13 @@ public class CleanerServiceImpl implements CleanerServices {
         }
     }
 
-    /**
-     * Handles customer feedback after job completion.
-     * In this placeholder method, we assume customer feedback is optional but can be handled if available.
-     */
-    private String handleCustomerFeedback(Booking booking) {
-        // Example feedback logic. In a real scenario, this might involve asking customers for feedback.
-        String customerFeedback = "Thanks for your hard work!";  // This can be fetched from a feedback system.
 
-        // Optional: save feedback to booking record if needed
-        // booking.setCustomerFeedback(customerFeedback); // Uncomment if there's a feedback field in Booking
-        // bookingRepository.save(booking);  // Uncomment if feedback needs to be persisted
+
+    private String handleCustomerFeedback(Booking booking) {
+
+        String customerFeedback = "Thanks for your hard work!";
+
+
 
         return "Customer feedback received: " + customerFeedback;
     }

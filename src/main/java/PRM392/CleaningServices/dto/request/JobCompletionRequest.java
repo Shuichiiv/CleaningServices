@@ -5,6 +5,6 @@ import lombok.Data;
 
 @Data
 public class JobCompletionRequest {
-    private Long jobId;
+    private Long bookingId;
     private Long cleanerId;
 }
