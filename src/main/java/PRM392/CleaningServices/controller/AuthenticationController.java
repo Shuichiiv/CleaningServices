@@ -1,6 +1,7 @@
 package PRM392.CleaningServices.controller;
 
 
+import PRM392.CleaningServices.dto.reponse.LoginRespone;
 import PRM392.CleaningServices.dto.request.LoginRequest;
 import PRM392.CleaningServices.dto.request.RegisterRequest;
 import PRM392.CleaningServices.model.User;
@@ -46,11 +47,9 @@ public class AuthenticationController {
         if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new RuntimeException("Invalid email or password");
         }
+
         String token = jwtUtil.generateToken(email);
-        Map<String, String> response = new HashMap<>();
-        response.put("token", token);
-        response.put("email", user.getEmail());
-        response.put("role", user.getRole().toString());
+        LoginRespone response = new LoginRespone(token, user.getEmail(), user.getRole());
 
         return ResponseEntity.ok(response);
     }
