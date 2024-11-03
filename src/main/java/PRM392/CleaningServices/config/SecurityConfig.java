@@ -29,6 +29,7 @@ public class SecurityConfig{
                 .authorizeRequests()
                 .requestMatchers("/api/auth/login", "/api/auth/register", "/api/auth/validate-token", "/v3/api-docs/**", "/swagger-ui/**").permitAll() // Cho phép truy cập không cần xác thực
                 .requestMatchers("/api/admin/**").hasAuthority("Admin") // Chỉ Admin mới được phép truy cập
+                .requestMatchers("/api/feedbacks/**").hasAuthority("Admin") // Chỉ Admin mới được phép truy cập
                 .requestMatchers("/api/cleaner/**").hasAuthority("Staff") // Chỉ Cleaner mới được phép truy cập
                 .requestMatchers("/api/customer/**").hasAuthority("Customer") // Chỉ Customer mới được phép truy cập
                 .anyRequest().authenticated()
