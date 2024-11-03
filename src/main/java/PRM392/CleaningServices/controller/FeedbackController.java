@@ -17,21 +17,21 @@ public class FeedbackController {
     @Autowired
     private FeedbackService feedbackService;
 
-    @PostMapping
+    @PostMapping("/create")
     public FeedbackDTO createFeedback(@RequestBody FeedbackDTO feedbackDTO) {
         Feedback feedback = convertToEntity(feedbackDTO);
         Feedback createdFeedback = feedbackService.createFeedback(feedback);
         return convertToDTO(createdFeedback);
     }
 
-    @GetMapping
+    @GetMapping("/getall")
     public List<FeedbackDTO> getAllFeedbacks() {
         return feedbackService.getAllFeedbacks().stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/view/{id}")
     public ResponseEntity<FeedbackDTO> getFeedbackById(@PathVariable Long id) {
         return feedbackService.getFeedbackById(id)
                 .map(this::convertToDTO)
@@ -39,7 +39,7 @@ public class FeedbackController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/update/{id}")
     public ResponseEntity<FeedbackDTO> updateFeedback(@PathVariable Long id, @RequestBody FeedbackDTO feedbackDTO) {
         try {
             Feedback feedbackDetails = convertToEntity(feedbackDTO);
