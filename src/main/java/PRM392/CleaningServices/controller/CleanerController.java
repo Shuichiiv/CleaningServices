@@ -44,5 +44,4 @@ public class CleanerController {
         // Return BAD_REQUEST with the exact failure message otherwise
         return ResponseEntity.badRequest().body(result);
     }
-
 }

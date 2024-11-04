@@ -1,13 +1,16 @@
 package PRM392.CleaningServices.services.impl;
 
 import PRM392.CleaningServices.model.Booking;
+import PRM392.CleaningServices.model.Notification;
 import PRM392.CleaningServices.model.Schedule;
 import PRM392.CleaningServices.repository.BookingRepository;
+import PRM392.CleaningServices.repository.NotificationRepository;
 import PRM392.CleaningServices.repository.ScheduleRepository;
 import PRM392.CleaningServices.services.CleanerServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,12 +23,14 @@ public class CleanerServiceImpl implements CleanerServices {
     @Autowired
     private BookingRepository bookingRepository;
 
+    @Autowired
+    private NotificationRepository notificationRepository; // New repository for notifications
+
     @Override
     public List<Schedule> getCleanerSchedule(Long cleanerId) {
-        // Fetch the schedule for the cleaner based on their ID
         List<Schedule> schedules = scheduleRepository.findByCleaner_UserId(cleanerId);
+        System.out.println("Cleaner ID: " + cleanerId + ", Schedules found: " + schedules.size());
         if (schedules.isEmpty()) {
-            // Optionally handle case if no schedules are found
             System.out.println("No schedules found for cleaner with ID: " + cleanerId);
         }
         return schedules;
@@ -33,22 +38,23 @@ public class CleanerServiceImpl implements CleanerServices {
 
     @Override
     public String getJobNotifications(Long cleanerId) {
-        // Logic to get job notifications.
-        // Fetch schedules and generate a notification message if there are new jobs.
-        List<Schedule> schedules = scheduleRepository.findByCleaner_UserId(cleanerId);
-        if (schedules.isEmpty()) {
-            return "No new jobs at the moment.";
+        List<Notification> notifications = notificationRepository.findByUser_UserId(cleanerId);
+        System.out.println("Cleaner ID: " + cleanerId + ", Notifications count: " + notifications.size());
+        
+        if (notifications.isEmpty()) {
+            return "No new job notifications.";
         }
 
-        StringBuilder notificationMessage = new StringBuilder("New jobs for you:\n");
-        schedules.forEach(schedule -> {
-            notificationMessage.append("Job on ")
-                    .append(schedule.getScheduledDate())
-                    .append(" from ")
-                    .append(schedule.getStartTime())
-                    .append(" to ")
-                    .append(schedule.getEndTime())
-                    .append(".\n");
+        StringBuilder notificationMessage = new StringBuilder("You have new job notifications:\n");
+        notifications.forEach(notification -> {
+            notificationMessage.append("- ")
+                    .append(notification.getMessage())
+                    .append(" (")
+                    .append(notification.getCreatedDate())
+                    .append(")\n");
+            // Mark notification as read
+            notification.setIsRead(true);
+            notificationRepository.save(notification);
         });
 
         return notificationMessage.toString();
@@ -56,26 +62,20 @@ public class CleanerServiceImpl implements CleanerServices {
 
     @Override
     public String confirmCompletion(Long bookingId, Long cleanerId) {
-
-
         Optional<Booking> bookingOptional = bookingRepository.findById(bookingId);
-
 
         if (bookingOptional.isPresent()) {
             Booking booking = bookingOptional.get();
 
-
             if (booking.getCleaner() != null && booking.getCleaner().getUserId().equals(cleanerId)) {
-
-
                 if (!booking.isCompleted()) {
-
                     booking.markAsCompleted();
                     bookingRepository.save(booking);
-
-
+                    
+                    // Create a notification for job completion
+                    createNotificationForJobCompletion(booking);
+                    
                     String feedbackMessage = handleCustomerFeedback(booking);
-
                     return "Job completed successfully. " + feedbackMessage;
                 } else {
                     return "Job has already been completed.";
@@ -88,14 +88,20 @@ public class CleanerServiceImpl implements CleanerServices {
         }
     }
 
+    private void createNotificationForJobCompletion(Booking booking) {
+        Notification notification = Notification.builder()
+                .user(booking.getCleaner())
+                .message("Job #" + booking.getBookingId() + " has been completed.")
+                .isRead(false)
+                .createdDate(LocalDateTime.now())
+                .build();
 
+        notificationRepository.save(notification);
+        System.out.println("Notification created for job completion: " + notification.getMessage());
+    }
 
     private String handleCustomerFeedback(Booking booking) {
-
         String customerFeedback = "Thanks for your hard work!";
-
-
-
         return "Customer feedback received: " + customerFeedback;
     }
 }
